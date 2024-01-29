@@ -30,6 +30,13 @@ body {
   line-height: 1.5;
 }
 
+.form {
+  display: flex;
+  align-items: center;
+  width: 372px;
+  margin: 32px auto;
+}
+
 button {
   color: #FFF;
   font-family: Montserrat;
@@ -41,6 +48,7 @@ button {
   border-radius: 8px;
   background: #4E75FF;
   height: 40px;
+  width: 91px;
   padding: 8px 16px;
   border: none;
   transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -50,11 +58,43 @@ button:hover {
   background: #6C8CFF;
 }
 
-button:disabled {
-  color: #989898;
-  background: #CFCFCF;
-  cursor: not-allowed;
+input[type="text"] {
+  width: 272px;
+  height: 40px;
+  border-radius: 4px;
+  background: #FFF;
+  padding: 8px 16px 8px 16px;
+  border: 1px solid #808080;
+  margin-right: 8px;
+  color: #808080;
+  font-family: Montserrat;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  transition: border 250ms cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+input[type="text"]:hover {
+  border: 1px solid #000000;
+}
+
+input[type="text"]:focus {
+  outline: none;
+  border: 1px solid #4E75FF;
+  color: #2E2F42;
+}
+
+.image-list {
+  margin: 0 auto;
+  width: 1128px;
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 
 
 
