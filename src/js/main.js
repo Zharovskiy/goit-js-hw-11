@@ -1,28 +1,39 @@
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
-import okIcon from '../img/ok.svg';
+import dangIcon from '../img/dang.svg';
 import errorIcon from '../img/err.svg';
+import xIcon from '../img/x.svg';
+import SimpleLightbox from "simplelightbox";
+import "simplelightbox/dist/simple-lightbox.min.css";
 
-const fetchImageBtn = document.querySelector(".btn");
-const imageList = document.querySelector(".image-list");
+const lightbox = new SimpleLightbox('.gallery a', {captionDelay: 250, captionsData: 'alt'});
 
-fetchImageBtn.addEventListener("submit", (event) => {
+const form = document.querySelector(".form");
+const imageList = document.querySelector(".gallery");
+
+form.addEventListener("submit", (event) => {
     event.preventDefault();
-    // const form = event.target;
-//     const delay = form.elements.delay.value;
-//     const state = form.elements.state.value;
+    imageList.innerHTML = '<span class="loader"></span>';
     fetchImage(event)
-    .then((data) => {
-        console.log(data);
-        return data
-    })
+    .then((images) => renderImage(images))
     .catch((error) => onRejected(error));
+    form.reset();
 });
 
-// renderImage
+// var API_KEY = '42096263-920755fbf423cd5814494514c';
+// var URL = "https://pixabay.com/api/?key="+API_KEY+"&q="+encodeURIComponent('red roses');
+// $.getJSON(URL);
 
-function fetchImage(event) {
-  return fetch('https://pixabay.com/api/?key=42096263-920755fbf423cd5814494514c&q=yellow+flowers&image_type=photo&orientation=horizontal&safesearch=true')
+function fetchImage({target: {keyword: {value}}}) {
+  const searchParams = new URLSearchParams({
+    key: '42096263-920755fbf423cd5814494514c',
+    q: value,
+    image_type: 'photo',
+    orientation: 'horizontal',
+    safesearch: true
+  });
+
+  return fetch(`https://pixabay.com/api/?${searchParams}`)
     .then((response) => {
       if (!response.ok) {
         throw new Error(`Error`);
@@ -32,37 +43,123 @@ function fetchImage(event) {
   );
 }
 
-// const searchParams = new URLSearchParams({
-//     key: '42096263-920755fbf423cd5814494514c',
-//     q: 'cat',
-//     image_type: 'photo',
-//     orientation: 'horizontal',
-//     safesearch: true
-// });
-// console.log(searchParams)
+function renderImage({totalHits, hits}) {
+  if (parseInt(totalHits) > 0) {
+    const markup = hits.map(createElementGallery);
+    imageList.innerHTML = '';
+    imageList.append(...markup);
+    lightbox.refresh();
+  }else{
+    imageList.innerHTML = '';
+    onWarning();
+  }    
+}
 
-// function renderImage(images) {
-//   const markup = images
-//     .map((image) => {
-//       return `<li>
-//           <p><b>Name</b>: ${image.name}</p>
-//           <p><b>Email</b>: ${image.email}</p>
-//           <p><b>Company</b>: ${image.company.name}</p>
-//         </li>`;
-//     })
-//     .join("");
-//     imageList.insertAdjacentHTML("beforeend", markup);
-// }
+function onWarning() {
+  iziToast.warning({
+    title: 'Sorry,',
+    titleColor: '#FFFFFF',
+    message: 'there are no images matching your search query. Please try again!',
+    messageColor: '#FFFFFF',
+    messageSize: '16px',
+    backgroundColor: '#FFA000',
+    iconUrl: dangIcon,
+    position: 'center',
+    close: false,
+    buttons: [
+      [
+        `<button type="button" style="background-color: #FFA000; width: 20px; height: 20px; padding: 5px"><img style="width: 10px; height: 10px" src=${xIcon}></button>`,
+        function (instance, toast) {
+          instance.hide({ transitionOut: 'fadeOut' }, toast);
+        },
+      ],
+    ]
+  });
+}
 
 function onRejected(error) {
-    iziToast.show({
-        title: 'Error',
-        titleColor: '#FFFFFF',
-        message: `Rejected promise`,
-        messageColor: '#FFFFFF',
-        messageSize: '16px',
-        backgroundColor: '#EF4040',
-        iconUrl: errorIcon,
-        position: 'topRight'
-    });
+  iziToast.show({
+    title: 'Error',
+    titleColor: '#FFFFFF',
+    message: error,
+    messageColor: '#FFFFFF',
+    messageSize: '16px',
+    backgroundColor: '#EF4040',
+    iconUrl: errorIcon,
+    position: 'topRight',
+    close: false,
+    buttons: [
+      [
+        `<button type="button" style="background-color: #EF4040; width: 20px; height: 20px; padding: 5px"><img style="width: 10px; height: 10px" src=${xIcon}></button>`,
+        function (instance, toast) {
+          instance.hide({ transitionOut: 'fadeOut' }, toast);
+        },
+      ],
+    ]
+  });
 };
+
+
+function createElementGallery({webformatURL, largeImageURL, tags, likes, views, comments, downloads}) {
+    const ul = document.createElement('ul');
+    ul.classList.add('card');
+  
+        const link = document.createElement('a');
+        link.classList.add('gallery-link');
+        link.setAttribute('href', largeImageURL);
+    
+            const img = document.createElement('img');
+            img.classList.add('gallery-image');
+            img.setAttribute('src', webformatURL);
+            img.setAttribute('alt', tags);
+
+        const ulElem = document.createElement('ul');
+        ulElem.classList.add('item-img');
+
+            const liLikes = document.createElement('li');
+            liLikes.classList.add('elem-img');
+    
+                const pLikes = document.createElement('p');
+                pLikes.classList.add('elem-name');
+                pLikes.textContent = 'Likes';
+                const pLikesValue = document.createElement('p');
+                pLikesValue.textContent = likes;
+
+            const liViews = document.createElement('li');
+            liViews.classList.add('elem-img');
+    
+                const pViews = document.createElement('p');
+                pViews.classList.add('elem-name');
+                pViews.textContent = 'Views';
+                const pViewsValue = document.createElement('p');
+                pViewsValue.textContent = views;
+
+            const liComments = document.createElement('li');
+            liComments.classList.add('elem-img');
+    
+                const pComments = document.createElement('p');
+                pComments.classList.add('elem-name');
+                pComments.textContent = 'Comments';
+                const pCommentsValue = document.createElement('p');
+                pCommentsValue.textContent = comments;  
+
+            const liDownloads = document.createElement('li');
+            liDownloads.classList.add('elem-img');
+    
+                const pDownloads = document.createElement('p');
+                pDownloads.classList.add('elem-name');
+                pDownloads.textContent = 'Downloads';
+                const pDownloadsValue = document.createElement('p');
+                pDownloadsValue.textContent = downloads;    
+
+
+        liDownloads.append(pDownloads, pDownloadsValue);
+        liComments.append(pComments, pCommentsValue);
+        liViews.append(pViews, pViewsValue);       
+        liLikes.append(pLikes, pLikesValue);        
+      ulElem.append(liLikes, liViews, liComments, liDownloads);         
+      link.append(img);          
+    ul.append(link, ulElem);
+    return ul
+}
+
