@@ -30,8 +30,9 @@ function fetchImage({target: {keyword: {value}}}) {
     orientation: 'horizontal',
     safesearch: true
   });
+  const URL = `${BASE_URL}${END_POINT}?${PARAMS}`;
 
-  return fetch(`${BASE_URL}${END_POINT}?${PARAMS}`)
+  return fetch(URL)
     .then((response) => {
       if (response.ok) {
         return response.json();
