@@ -11,7 +11,9 @@ const lightbox = new SimpleLightbox('.gallery a', {captionDelay: 250, captionsDa
 const form = document.querySelector(".form");
 const imageList = document.querySelector(".gallery");
 
-form.addEventListener("submit", (event) => {
+form.addEventListener("submit", onSearch);
+
+function onSearch (event) {
   event.preventDefault();
   const keyWord = event.target.keyword.value.trim();
   if (keyWord) {
@@ -20,8 +22,8 @@ form.addEventListener("submit", (event) => {
     .then((images) => renderImage(images))
     .catch((error) => onRejected(error));
     form.reset();
-  } form.reset();
-});
+  }
+}
 
 function fetchImage(keyWord) {
   const BASE_URL = 'https://pixabay.com/';
@@ -47,9 +49,8 @@ function fetchImage(keyWord) {
 
 function renderImage({totalHits, hits}) {
   if (parseInt(totalHits) > 0) {
-    const markup = hits.map(createElementGallery);
-    imageList.innerHTML = '';
-    imageList.append(...markup);
+    const markup = hits.map(createElementGallery).join('');
+    imageList.innerHTML = markup;
     lightbox.refresh();
   }else{
     imageList.innerHTML = '';
@@ -121,65 +122,29 @@ function onRejected(error) {
 
 
 function createElementGallery({webformatURL, largeImageURL, tags, likes, views, comments, downloads}) {
-    const ul = document.createElement('ul');
-    ul.classList.add('card');
-  
-        const link = document.createElement('a');
-        link.classList.add('gallery-link');
-        link.setAttribute('href', largeImageURL);
-    
-            const img = document.createElement('img');
-            img.classList.add('gallery-image');
-            img.setAttribute('src', webformatURL);
-            img.setAttribute('alt', tags);
-
-        const ulElem = document.createElement('ul');
-        ulElem.classList.add('item-img');
-
-            const liLikes = document.createElement('li');
-            liLikes.classList.add('elem-img');
-    
-                const pLikes = document.createElement('p');
-                pLikes.classList.add('elem-name');
-                pLikes.textContent = 'Likes';
-                const pLikesValue = document.createElement('p');
-                pLikesValue.textContent = likes;
-
-            const liViews = document.createElement('li');
-            liViews.classList.add('elem-img');
-    
-                const pViews = document.createElement('p');
-                pViews.classList.add('elem-name');
-                pViews.textContent = 'Views';
-                const pViewsValue = document.createElement('p');
-                pViewsValue.textContent = views;
-
-            const liComments = document.createElement('li');
-            liComments.classList.add('elem-img');
-    
-                const pComments = document.createElement('p');
-                pComments.classList.add('elem-name');
-                pComments.textContent = 'Comments';
-                const pCommentsValue = document.createElement('p');
-                pCommentsValue.textContent = comments;  
-
-            const liDownloads = document.createElement('li');
-            liDownloads.classList.add('elem-img');
-    
-                const pDownloads = document.createElement('p');
-                pDownloads.classList.add('elem-name');
-                pDownloads.textContent = 'Downloads';
-                const pDownloadsValue = document.createElement('p');
-                pDownloadsValue.textContent = downloads;    
-
-
-        liDownloads.append(pDownloads, pDownloadsValue);
-        liComments.append(pComments, pCommentsValue);
-        liViews.append(pViews, pViewsValue);       
-        liLikes.append(pLikes, pLikesValue);        
-      ulElem.append(liLikes, liViews, liComments, liDownloads);         
-      link.append(img);          
-    ul.append(link, ulElem);
-    return ul
-}
+  return `
+<ul class="card">
+  <a class="gallery-link" href="${largeImageURL}">
+    <img class="gallery-image" src="${webformatURL}" alt="${tags}">
+  </a>
+  <ul class="item-img">
+    <li class="elem-img">
+      <p class="elem-name">Likes</p>
+      <p>${likes}</p>
+    </li>
+    <li class="elem-img">
+      <p class="elem-name">Views</p>
+      <p>${views}</p>
+    </li>
+    <li class="elem-img">
+      <p class="elem-name">Comments</p>
+      <p>${comments}</p>
+    </li>
+    <li class="elem-img">
+      <p class="elem-name">Downloads</p>
+      <p>${downloads}</p>
+    </li>
+  </ul>
+</ul>
+`}
 
