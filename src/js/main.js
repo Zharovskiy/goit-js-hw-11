@@ -20,12 +20,10 @@ form.addEventListener("submit", (event) => {
     form.reset();
 });
 
-// var API_KEY = '42096263-920755fbf423cd5814494514c';
-// var URL = "https://pixabay.com/api/?key="+API_KEY+"&q="+encodeURIComponent('red roses');
-// $.getJSON(URL);
-
 function fetchImage({target: {keyword: {value}}}) {
-  const searchParams = new URLSearchParams({
+  const BASE_URL = 'https://pixabay.com';
+  const END_POINT = '/api';
+  const PARAMS = new URLSearchParams({
     key: '42096263-920755fbf423cd5814494514c',
     q: value,
     image_type: 'photo',
@@ -33,12 +31,12 @@ function fetchImage({target: {keyword: {value}}}) {
     safesearch: true
   });
 
-  return fetch(`https://pixabay.com/api/?${searchParams}`)
+  return fetch(`${BASE_URL}${END_POINT}?${PARAMS}`)
     .then((response) => {
-      if (!response.ok) {
-        throw new Error(`Error`);
+      if (response.ok) {
+        return response.json();
       }
-      return response.json();
+      throw new Error(`${response.status} - ${response.statusText}`);
     }
   );
 }
@@ -68,7 +66,16 @@ function onWarning() {
     close: false,
     buttons: [
       [
-        `<button type="button" style="background-color: #FFA000; width: 20px; height: 20px; padding: 5px"><img style="width: 10px; height: 10px" src=${xIcon}></button>`,
+        `<button type="button" style="
+          background-color: #FFA000; 
+          width: 20px; 
+          height: 20px; 
+          padding: 5px">
+            <img style="
+              width: 10px; 
+              height: 10px" 
+              src=${xIcon}>
+        </button>`,
         function (instance, toast) {
           instance.hide({ transitionOut: 'fadeOut' }, toast);
         },
@@ -81,7 +88,7 @@ function onRejected(error) {
   iziToast.show({
     title: 'Error',
     titleColor: '#FFFFFF',
-    message: error,
+    message: `${error}`,
     messageColor: '#FFFFFF',
     messageSize: '16px',
     backgroundColor: '#EF4040',
@@ -90,7 +97,16 @@ function onRejected(error) {
     close: false,
     buttons: [
       [
-        `<button type="button" style="background-color: #EF4040; width: 20px; height: 20px; padding: 5px"><img style="width: 10px; height: 10px" src=${xIcon}></button>`,
+        `<button type="button" style="
+          background-color: #EF4040; 
+          width: 20px; 
+          height: 20px; 
+          padding: 5px">
+            <img style="
+              width: 10px; 
+              height: 10px" 
+                src=${xIcon}>
+        </button>`,
         function (instance, toast) {
           instance.hide({ transitionOut: 'fadeOut' }, toast);
         },
