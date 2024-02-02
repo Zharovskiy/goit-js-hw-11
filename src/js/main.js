@@ -12,20 +12,23 @@ const form = document.querySelector(".form");
 const imageList = document.querySelector(".gallery");
 
 form.addEventListener("submit", (event) => {
-    event.preventDefault();
+  event.preventDefault();
+  const keyWord = event.target.keyword.value.trim();
+  if (keyWord) {
     imageList.innerHTML = '<span class="loader"></span>';
-    fetchImage(event)
+    fetchImage(keyWord)
     .then((images) => renderImage(images))
     .catch((error) => onRejected(error));
     form.reset();
+  } form.reset();
 });
 
-function fetchImage({target: {keyword: {value}}}) {
+function fetchImage(keyWord) {
   const BASE_URL = 'https://pixabay.com/';
   const END_POINT = 'api/';
   const PARAMS = new URLSearchParams({
     key: '42096263-920755fbf423cd5814494514c',
-    q: value,
+    q: keyWord,
     image_type: 'photo',
     orientation: 'horizontal',
     safesearch: true
