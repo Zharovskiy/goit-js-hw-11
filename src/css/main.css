@@ -112,10 +112,6 @@ input[type="text"]:focus {
   justify-content: center;
 }
 
-.gallery-link {
-  background: url(<path-to-image>), lightgray 0px -30px / 100% 180% no-repeat;
-}
-
 .item-img {
   color: #2E2F42;
   font-family: Montserrat;
