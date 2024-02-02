@@ -21,8 +21,8 @@ form.addEventListener("submit", (event) => {
 });
 
 function fetchImage({target: {keyword: {value}}}) {
-  const BASE_URL = 'https://pixabay.com';
-  const END_POINT = '/api';
+  const BASE_URL = 'https://pixabay.com/';
+  const END_POINT = 'api/';
   const PARAMS = new URLSearchParams({
     key: '42096263-920755fbf423cd5814494514c',
     q: value,
