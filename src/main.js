@@ -1,8 +1,8 @@
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
-import dangIcon from '../img/dang.svg';
-import errorIcon from '../img/err.svg';
-import xIcon from '../img/x.svg';
+import dangIcon from './img/dang.svg';
+import errorIcon from './img/err.svg';
+import xIcon from './img/x.svg';
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 
